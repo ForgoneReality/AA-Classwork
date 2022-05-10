@@ -1,0 +1,29 @@
+def tribonacci_number(num)
+    if num == 1 || num == 2
+        return 1
+    elsif num == 3
+        return 2
+    else
+        num -= 3
+        first = 1
+        second = 1
+        third = 2
+        while (num > 0)
+            temp = first + second + third
+            first = second
+            second = third
+            third = temp
+            num -= 1
+        end
+        return third
+    end
+end
+
+p tribonacci_number(1)  # 1
+p tribonacci_number(2)  # 1
+p tribonacci_number(3)  # 2
+p tribonacci_number(4)  # 4
+p tribonacci_number(5)  # 7
+p tribonacci_number(6)  # 13
+p tribonacci_number(7)  # 24
+p tribonacci_number(11) # 274

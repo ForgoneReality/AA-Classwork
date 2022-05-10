@@ -1,0 +1,71 @@
+#check below if it satisfies the obvious requirement of needing least primes (so as many multiples as possible)
+#return the prime factorization if so, return empty hash if not
+
+def pre_check(num)
+    my_hash = Hash.new(0)
+    factor = 2
+
+    primes = []
+    while(num > 1)
+        if my_hash.include?(factor) #already a previous prime factor 
+            if num % factor == 0
+                my_hash[factor] += 1
+                num = num / factor
+                factor = 2
+            else
+                factor += 1
+            end
+        else #new factor, potentially non-prime
+            if primes.none? { |prime| factor % prime == 0} #confirmed it is a NEW prime factor
+                primes << factor
+                #idea: now at this point, must have this prime number or dead
+                if num % factor == 0
+                    my_hash[factor] += 1
+                    num = num / factor
+                    factor = 2
+                else
+                    return {}
+                end
+            else #composite
+                factor += 1 
+            end
+        end
+    end
+
+    if (0...primes.length-1).all? {|i| my_hash[primes[i]] >= my_hash[primes[i+1]]}
+        return my_hash
+    else
+        return {}
+    end
+end
+
+    #go through hash and check numbers
+end
+
+        
+
+#for a number to be, anti-prime, it must be the sum of a smallest 
+#set of prime factors
+
+#24 = 2 * 2 * 2 * 3
+
+#30 = 2 * 3 * 5 <- bad because 2*2 is less than 5, but counts as 2
+
+#36 = 2 * 2 * 3 * 3
+
+#think in terms of binary, and use fact we have PRIMES and SMALLEST of them
+
+
+def anti_prime?(num)
+    if num <= 0 
+        return false
+    elsif num == 1 || num == 2 #edge cases where 1 and prime number 2 are anti_prime, all others are composite
+        return true
+    else
+        return false if pre_check(num).empty?
+
+    return true
+
+
+
+
