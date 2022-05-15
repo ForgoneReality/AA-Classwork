@@ -9,6 +9,10 @@ class Pawn < Piece
         return forward_dir + side_attacks
     end
 
+    def attack_moves
+        return side_attacks
+    end
+
     private
 
     def at_start_row?

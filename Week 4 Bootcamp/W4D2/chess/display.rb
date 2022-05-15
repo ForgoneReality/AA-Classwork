@@ -7,7 +7,7 @@ class Display
 
     def initialize(board)
         @board = board
-        @cursor = Cursor.new([0,0], board)
+        @cursor = Cursor.new([7,0], board)
     end
 
     def render
@@ -57,44 +57,44 @@ class Display
     end
 end
 
-if __FILE__ == $PROGRAM_NAME
-    b = Board.new
-    d = Display.new(b)
-    b.move_piece([6,5],[5,5])
-    b.move_piece([6,6],[4,6])
-    b.move_piece([1,4],[3,4])
+# if __FILE__ == $PROGRAM_NAME
+#     b = Board.new
+#     d = Display.new(b)
+#     # b.move_piece([6,5],[5,5])
+#     # b.move_piece([6,6],[4,6])
+#     # b.move_piece([1,4],[3,4])
     
-    p b.checkmate?(:white)
+#     # p b.checkmate?(:white)
 
-    # #------------
-    # p b[[0,3]].valid_moves
-    # p b[[7,4]].valid_moves
+#     # #------------
+#     # p b[[0,3]].valid_moves
+#     # p b[[7,4]].valid_moves
 
-    # #------------
+#     # # #------------
 
-    b.move_piece([0,3],[4,7])
-    p b.checkmate?(:white)
+#     # b.move_piece([0,3],[4,7])
+#     # p b.checkmate?(:white)
 
 
-    # ATTEMPT 1
-    # p "now?"
-    # b.move_piece([4,7],[5,6])
-    # p b.checkmate?(:white)
+#     # ATTEMPT 1
+#     # p "now?"
+#     # b.move_piece([4,7],[5,6])
+#     # p b.checkmate?(:white)
 
-    # b.move_piece([5,6],[6,5])
-    # p b.checkmate?(:white)
-    ##
+#     # b.move_piece([5,6],[6,5])
+#     # p b.checkmate?(:white)
+#     ##
 
-    # p "what about this..."
-    # b.move_piece([4,7], [5,7])
-    # b.move_piece([1,5], [3,5])
-    # b.move_piece([0,5], [1,4])
-    # b.move_piece([1,4], [4,7])
-    # p b.checkmate?(:white)
-    # b.move_piece([7,4], [6,5])
-    # b.move_piece([3,5], [4,5])
-    # p b.checkmate?(:white)
+#     # p "what about this..."
+#     # b.move_piece([4,7], [5,7])
+#     # b.move_piece([1,5], [3,5])
+#     # b.move_piece([0,5], [1,4])
+#     # b.move_piece([1,4], [4,7])
+#     # p b.checkmate?(:white)
+#     # b.move_piece([7,4], [6,5])
+#     # b.move_piece([3,5], [4,5])
+#     # p b.checkmate?(:white)
    
 
-    d.render
-end
+#     d.render
+# end

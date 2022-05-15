@@ -3,7 +3,7 @@ require_relative "board.rb"
 require_relative "cursor.rb"
 
 class HumanPlayer < Player
-    def make_move(board)
+    def make_move
         begin
             p color
             display.render
