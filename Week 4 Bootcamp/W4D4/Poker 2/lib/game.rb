@@ -8,7 +8,7 @@ class Game
         puts "How many players are playing?"
         @num_players = gets.chomp.to_i
         if num_players > 8 || num_players < 1
-            raise InputError.new("Invalid Number of Players")
+            raise IOError.new("Invalid Number of Players")
         end
 
         @board = Board.new(@num_players)

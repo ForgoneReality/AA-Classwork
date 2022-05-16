@@ -30,7 +30,7 @@ class Hand
 
         #DELETE BELOW
         # b = small_hand + [Card.new(:seven, :hearts), Card.new(:queen, :hearts), Card.new(:nine, :hearts), Card.new(:king, :diamonds), Card.new(:eight, :clubs)]
-        b = @cards_in_hand #WS: changed from @cards_in_hand to big hand
+        b = big_hand #WS: changed from @cards_in_hand to big hand
         ######
         
         raise StandardError.new("Total Hand Size is not 7") if b.length != 7

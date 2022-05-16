@@ -32,17 +32,19 @@ class Player
             puts "#{@name}, please enter your command"
             player_input = gets.chomp.split
             move, num = player_input
-            num = num.to_i
+            
             case move
             when "allin"
                 self.go_all_in
             when "bet"
-                p "abcd"
-                p num
+                raise StandardError.new("Must enter input with bet!") if num == nil
+                num = num.to_i
                 self.bet(num)
             when "call"
                 self.call
             when "raiseto"
+                raise StandardError.new("Must enter input with raiseto!") if num == nil
+                num = num.to_i
                 self.raiseto(num)
             when "fold"
                 self.fold
@@ -52,7 +54,8 @@ class Player
                 #add exiting the game
             end
         rescue StandardError=>e 
-            puts e
+            puts "Error Occurred: #{e}"
+            puts "Please try again"
             retry
         end
     end 
@@ -94,7 +97,9 @@ class Player
     end
 
     def raiseto(num)
+        raise StandardError.new("did not enter a valid number to raise to") if num == nil
         bet = num - @current_bet
+        raise StandardError.new("your bet is lower than the current bet of #{@board.minimum_bet}!") if bet < @board.minimum_bet #?
         raise StandardError.new("you dont have enough money") if bet >= @chips
         raise StandardError.new("you cannot raise") if @board.minimum_bet <= 0 
         @board.main_pot += bet

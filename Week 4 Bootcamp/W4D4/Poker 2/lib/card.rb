@@ -1,3 +1,5 @@
+require "colorize"
+
 class Card 
 
     SUITS = [:hearts, :clubs, :spades, :diamonds]
@@ -14,11 +16,16 @@ class Card
     :three, 
     :two]
 
-    attr_reader :type, :suit
+    attr_reader :type, :suit, :color
 
     def initialize(type, suit)
         @type = type
         @suit = suit
+        if @suit == :clubs || @suit == :spades
+            @color = :white
+        else
+            @color = :red
+        end
     end
 
     def value
@@ -87,13 +94,13 @@ class Card
     def card_picture
         lines = Array.new
         lines[0] = "┌─────────┐ "
-        lines[1] = "│#{type_s.ljoin(2)}       │ "  # use two {} one for char, one for space or char
+        lines[1] = "│#{type_s.ljust(2)}       │ "  # use two {} one for char, one for space or char
         lines[2] = "│         │ "
         lines[3] = "│         │ "
-        lines[4] = "│    #{suit_s}    │ "
+        lines[4] = "│    #{suit_s.colorize(color)}    │ "
         lines[5] = "│         │ "
         lines[6] = "│         │ "
-        lines[7] = "│       #{type_s.rjoin(2)}│ "
+        lines[7] = "│       #{type_s.rjust(2)}│ "
         lines[8] = "└─────────┘ "
         return lines
     end

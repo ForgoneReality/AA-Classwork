@@ -2,8 +2,11 @@ require_relative "card.rb"
 require_relative "player.rb"
 require_relative "hand.rb"
 require_relative "deck.rb"
+require "colorize"
 
 class Board 
+
+    LEGEND = [nil, 'Single'.colorize(:cyan), 'Single Pair'.colorize(:cyan), 'Double Pair'.colorize(:cyan), 'Three-of-a-Kind'.colorize(:cyan), 'Straight'.colorize(:cyan), 'Flush'.colorize(:cyan), 'Full House'.colorize(:cyan), 'Four-of-a-Kind'.colorize(:cyan), 'Straight Flush'.colorize(:cyan), 'Royal Flush'.colorize(:gold)]
 
     # 1 move: 1 player move
     # 1 turn: 1 circle of activities around the table
@@ -84,8 +87,12 @@ class Board
             self.active_players[0].chips += @main_pot  # the person who didn't fold gets the pot
         else
             # reveal cards if more than two players reach the last round 
-            winner = reveal_cards  
-            winner.chips += @main_pot #the winning person gets the pot
+            # r = reveal_cards
+            # num_winners = r.length
+            # r.each do |winner|
+            #     winner += @main_pot / num_winners
+            # end
+            reveal_cards
         end
 
         @players.each do |player|
@@ -192,42 +199,165 @@ class Board
         best_tie_score = 0
         best_bruh_score = nil #second tie-breaker
         best_player = [] #may need something like minheap to handle ties/2nd vs 3rd place etc
+        best_hand = nil
         
         #HANDLE TIES!! BEST_PLAYER CAN BE ARRAY OR OTHER CONTAINER FOR NOW 
 
+        ##############################################
+        #TESTING PURPOSES
+        reserve_cards = @deck.deal(@num_players) 
+        deal_players(reserve_cards) 
+        self.flop = reserve_cards 
+        ##############################################
+
         @players.each do |player|
+            sleep_time = 4
             if player.active
-            
+                f = Array.new(9, "") 
+                player.hand.small_hand.each do |card|
+                    cp = card.card_picture
+                    (0..8).each do |i|
+                        f[i] += cp[i]
+                    end
+                end
+
+                f.each_with_index do |ele, i|
+                    f[i] = ele + "│ "
+                end
+
+                self.flop.each do |card|
+                    cp = card.card_picture
+                    (0..8).each do |i|
+                        f[i] += cp[i]
+                    end
+                end
+                    
+                (0..8).each do |line|
+                    puts f[line]
+                end
+
+                puts "#{player.name}'s Hand".center(23) + "The Flop".center(65)
+
+                puts ""
+
+                puts "#{player.name}'s Hand combined with the Flop's five cards"
+                sleep(sleep_time)
+
+                five = Array.new(9, "")
+
                 p_hand, p_score, tie_score, bruh_score = player.hand.best_five
+
+
+
+                p_hand.each do |card|
+                    cp = card.card_picture
+                    (0..8).each do |i|
+                        five[i] += cp[i]
+                    end
+                end
+
+                (0..8).each do |line|
+                    puts five[line]
+                end
+
+                puts "#{player.name}'s Best Five Cards with a #{LEGEND[p_score]} (rank: #{p_score}, tiebreaker score: #{tie_score})"
+
+                
+                p_hand, p_score, tie_score, bruh_score = player.hand.best_five
+
+                puts ""
+                puts "────────────────────────────────────────────────────────────────────────────────────────"
+                puts ""
+                sleep(sleep_time)
 
                 #Handle scoring.. below may need readjusting for side pot BS
                 if !best_score || p_score > best_score
                     best_player = [player]
                     best_score = p_score
                     best_tie_score = tie_score
-                    best_bruh_score = bruh_Score
+                    best_bruh_score = bruh_score
+                    best_hand = [p_hand]
                 elsif p_score == best_score
                     if tie_score > best_tie_score
                         best_player = [player]
                         best_tie_score = tie_score
                         best_bruh_score = bruh_score
+                        best_hand = [p_hand]
                     elsif tie_score == best_tie_score
                         if bruh_score == nil || bruh_score == best_bruh_score #tie
                             best_player << player
+                            best_hand << p_hand
                         elsif bruh_score > best_bruh_score
                             best_player = [player]
                             best_bruh_score = bruh_score
+                            best_hand = [p_hand]
                         end
                     end
                 end
             else
                 Card.print_empty_cards
-                puts "test".center(23)
+                puts "#{player.name} FOLDED..".center(23)
+                sleep(sleep_time)
             end
         end
 
-        #return best_player
-        return best_player[0]
+        if best_player.length == 1
+            puts "#{best_player[0].name} WINS $#{@main_pot}!".center(88)
+            puts
+            fiver = Array.new(9, "")
+            best_hand[0].each do |card|
+                if card.suit == :hearts || card.suit == :diamonds
+                    color = :red
+                else
+                    color = :white
+                end
+                fiver[0] += "┌─────────┐ "
+                fiver[1] += "│#{card.type_s.ljust(2)}       │ "  # use two {} one for char, one for space or char
+                fiver[2] += "│         │ "
+                fiver[3] += "│         │ "
+                fiver[4] += "│    #{card.suit_s.colorize(color)}    │ "
+                fiver[5] += "│         │ "
+                fiver[6] += "│         │ "
+                fiver[7] += "│       #{card.type_s.rjust(2)}│ "
+                fiver[8] += "└─────────┘ "
+            end
+
+            (0..8).each do |line|
+                puts "              " + fiver[line]
+            end
+            puts
+            puts "Winning Hand".center(86)
+
+            best_player[0].chips += @main_pot
+
+        elsif best_player.length > 1
+            if best_player.length == 2
+                puts "#{best_player[0].name} and #{best_player[0].name} split the pot for $#{@main_pot/2} each!".center(88)
+                puts
+
+                best_player.each do |player|
+                    player.chips += @main_pot / 2
+                end
+            else
+                s = ""
+                i = 0
+                while(i<player.length - 1)
+                    s += "#{best_player[i].name}, "
+                    i += 1
+                end
+                puts s + "and #{best_player[-1].name} split the pot for $#{@main_pot/best_player.length} each!"
+                puts
+
+                best_player.each do |player|
+                    player.chips += @main_pot / best_player.length
+                end
+            end
+        else
+            raise StandardError.new("Shouldn't have no best player")
+        end
+
+        # #return best_player
+        # return best_player
 
     end
 
